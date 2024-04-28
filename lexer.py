@@ -31,7 +31,7 @@ class Lexer:
                 
             if not match:
                 # Found a lexeme that doesn't match with any type.
-                raise Exception(f"Unrecognized token: {slice}! Please follow the language rules.")
+                raise SyntaxError(f"Unrecognized token: \"{slice}\"! Please follow the language rules.")
     
     def get_tokens(self) -> list[tuple[str, str]]:
         """Returns: list of lexemes and their token types."""
