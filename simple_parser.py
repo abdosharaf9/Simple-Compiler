@@ -10,18 +10,6 @@ class Parser:
         self.advance()
 
 
-    def parse(self):
-        while self.current_token[0] != EOF:
-            self.stmt()
-
-
-    def stmt(self):
-        self.match(ID)
-        self.match(ASSIGN)
-        self.expr()
-        self.match(SIMI_COLON)
-
-
     def match(self, token_type: str):
         if self.current_token[1] == token_type:
             self.advance()
@@ -37,30 +25,71 @@ class Parser:
             self.current_token = (EOF, EOF)
 
 
-    def expr(self):
-        self.term()
+    def parse(self):
+        self.stmt_list()
+
+
+    def stmt_list(self):
+        while self.current_token != (EOF, EOF):
+            self.stmt()
+
+
+    def stmt(self):
+        if self.current_token[1] == ID:
+            self.validate_assign_stmt()
+        elif self.current_token == ("print", KEYWORD):
+            self.validate_print_stmt()
+        elif self.current_token == ("if", KEYWORD):
+            self.validate_if_stmt()
+        else:
+            raise SyntaxError(f"⚠️  Syntax Error in <{self.current_token[0]}>! Unexpected token <{self.current_token[1]}>")
+
+
+    def validate_assign_stmt(self):
+        self.match(ID)
+        self.match(ASSIGN)
+        self.validate_arth_expr()
+        self.match(SEMICOLON)
+
+
+    def validate_print_stmt(self):
+        self.match(KEYWORD)
+        self.match(LEFT_PAREN)
+        self.match(ID)
+        self.match(RIGHT_PAREN)
+        self.match(SEMICOLON)
+
+
+    def validate_if_stmt(self):
+        self.match(KEYWORD)
+        self.match(LEFT_PAREN)
+        self.validate_rel_expr()
+        self.match(RIGHT_PAREN)
+        self.match(LEFT_BRACE)
+        self.stmt()
+        self.match(RIGHT_BRACE)
+
+
+    def validate_rel_expr(self):
+        self.validate_arth_expr()
+        self.match(RELATIONAL_OPERATOR)
+        self.validate_arth_expr()
+
+
+    def validate_arth_expr(self):
+        self.validate_term()
         while self.current_token[1] == ARITHMETIC_OPERATOR:
             self.advance()
-            self.term()
+            self.validate_term()
 
 
-    def term(self):
-        if self.current_token[1] in [ID, INT, FLOAT]:
+    def validate_term(self):
+        if self.current_token[1] in [ID, NUMBER]:
             self.advance()
         elif self.current_token[1] == LEFT_PAREN:
             self.match(LEFT_PAREN)
-            self.expr()
+            self.validate_arth_expr()
             self.match(RIGHT_PAREN)
         else:
             raise SyntaxError(f"⚠️  Syntax Error in <{self.current_token[0]}>! Not a valid expression!")
 
-
-input_code = open("./input-code.abdo", "r").read()
-lexer = Lexer(code=input_code)
-tokens = lexer.get_tokens()
-print(tokens, end="\n\n\n")
-parser = Parser(tokens=tokens)
-try:
-    parser.parse()
-except SyntaxError as se:
-    print(se)

@@ -9,7 +9,7 @@ class Lexer:
             code (str): Source code.
         """
         # Split the source code using a regex for more effeciency.
-        self.code_slices = re.findall(r'(?:"[^"]*"|#[^\n]*|[0-9]+\.[0-9]+|\w+|\S)', code)
+        self.code_slices = re.findall(r'(?:"[^"]*"|#[^\n]*|[0-9]+\.[0-9]+|\w+|<=|>=|==|!=|\S)', code)
         self.tokens = []
         self.check_tokens()
         
