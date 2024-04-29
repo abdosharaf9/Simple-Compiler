@@ -52,7 +52,7 @@ def main():
         
         
     except SyntaxError as se:
-        print(f"Failure >> {se}")
+        print(se)
 
 
 if __name__ == "__main__":

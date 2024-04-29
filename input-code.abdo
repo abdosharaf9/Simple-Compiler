@@ -1,7 +1,5 @@
-int x = 5;
+x = 5;
 # This is a comment
-string test = "Hello, World!"
-float y = 5.23;
-print((x + y) % 10)
+y = 5.23;
+z = (x + y) % 10;
 # This is another comment
-string test2 = "This is Abdo Language."
