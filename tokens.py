@@ -1,5 +1,6 @@
 # Constant titles.
 KEYWORD = "Keyword"
+DATA_TYPE = "Data Type"
 ARITHMETIC_OPERATOR = "Arithmetic Operator"
 RELATIONAL_OPERATOR = "Relational Operator"
 NUMBER = "Number"
@@ -17,6 +18,7 @@ EOF = "EOF"
 # Predefined token types that will be in my language.
 TOKENS = {
     KEYWORD: r"(if|print)\b",
+    DATA_TYPE: r"(int|float)\b",
     ARITHMETIC_OPERATOR: r"\+|\-|\*|\/|\%",
     RELATIONAL_OPERATOR: r"<=|>=|<|>|==|!=",
     NUMBER: r"\d+(\.\d+)?",

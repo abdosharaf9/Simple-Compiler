@@ -1,7 +1,9 @@
-x = 5;
+int test;
+int x = 5;
+x = 556;
 # This is a comment
-y = 5.23;
-z = (x + y) % 10;
+float y = 5.23;
+int z = (x + y) % 10;
 # This is another comment
 if(x*2 >= 56/22) {
     if((y-1) > 2) {

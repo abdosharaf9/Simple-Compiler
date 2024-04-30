@@ -1,4 +1,3 @@
-import re
 from lexer import Lexer
 from tokens import *
 
@@ -35,7 +34,9 @@ class Parser:
 
 
     def stmt(self):
-        if self.current_token[1] == ID:
+        if self.current_token[1] == DATA_TYPE:
+            self.validate_dec_stmt()
+        elif self.current_token[1] == ID:
             self.validate_assign_stmt()
         elif self.current_token == ("print", KEYWORD):
             self.validate_print_stmt()
@@ -43,6 +44,15 @@ class Parser:
             self.validate_if_stmt()
         else:
             raise SyntaxError(f"⚠️  Syntax Error in <{self.current_token[0]}>! Unexpected token <{self.current_token[1]}>")
+
+
+    def validate_dec_stmt(self):
+        self.match(DATA_TYPE)
+        self.match(ID)
+        if self.current_token[1] == ASSIGN:
+            self.match(ASSIGN)
+            self.validate_arth_expr()
+        self.match(SEMICOLON)
 
 
     def validate_assign_stmt(self):
