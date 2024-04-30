@@ -1,19 +1,19 @@
-from lexer import Lexer
+from lexer import Token
 from tokens import *
 
 class Parser:
-    def __init__(self, tokens: list[tuple[str, str]]):
-        self.tokens: list[tuple[str, str]] = tokens
+    def __init__(self, tokens: list[Token]):
+        self.tokens: list[Token] = tokens
         self.token_index: int = -1
-        self.current_token: tuple[str, str] = None
+        self.current_token: Token = None
         self.advance()
 
 
     def match(self, token_type: str):
-        if self.current_token[1] == token_type:
+        if self.current_token.token_type == token_type:
             self.advance()
         else:
-            raise SyntaxError(f"⚠️  Syntax Error in <{self.current_token[0]}>! Expected <{token_type}> but found <{self.current_token[1]}>")
+            raise SyntaxError(f"⚠️  Syntax Error in <{self.current_token.lexeme}>! Expected <{token_type}> but found <{self.current_token.token_type}>")
 
 
     def advance(self):
@@ -21,7 +21,7 @@ class Parser:
         if self.token_index < len(self.tokens):
             self.current_token = self.tokens[self.token_index]
         else:
-            self.current_token = (EOF, EOF)
+            self.current_token = None
 
 
     def parse(self):
@@ -29,27 +29,27 @@ class Parser:
 
 
     def stmt_list(self):
-        while self.current_token != (EOF, EOF):
+        while self.current_token != None:
             self.stmt()
 
 
     def stmt(self):
-        if self.current_token[1] == DATA_TYPE:
+        if self.current_token.token_type == DATA_TYPE:
             self.validate_dec_stmt()
-        elif self.current_token[1] == ID:
+        elif self.current_token.token_type == ID:
             self.validate_assign_stmt()
-        elif self.current_token == ("print", KEYWORD):
+        elif self.current_token.lexeme == "print" and self.current_token.token_type == KEYWORD:
             self.validate_print_stmt()
-        elif self.current_token == ("if", KEYWORD):
+        elif self.current_token.lexeme == "if" and self.current_token.token_type == KEYWORD:
             self.validate_if_stmt()
         else:
-            raise SyntaxError(f"⚠️  Syntax Error in <{self.current_token[0]}>! Unexpected token <{self.current_token[1]}>")
+            raise SyntaxError(f"⚠️  Syntax Error in <{self.current_token.lexeme}>! Unexpected token <{self.current_token.token_type}>")
 
 
     def validate_dec_stmt(self):
         self.match(DATA_TYPE)
         self.match(ID)
-        if self.current_token[1] == ASSIGN:
+        if self.current_token.token_type == ASSIGN:
             self.match(ASSIGN)
             self.validate_arth_expr()
         self.match(SEMICOLON)
@@ -88,18 +88,18 @@ class Parser:
 
     def validate_arth_expr(self):
         self.validate_term()
-        while self.current_token[1] == ARITHMETIC_OPERATOR:
+        while self.current_token.token_type == ARITHMETIC_OPERATOR:
             self.advance()
             self.validate_term()
 
 
     def validate_term(self):
-        if self.current_token[1] in [ID, NUMBER]:
+        if self.current_token.token_type in [ID, NUMBER]:
             self.advance()
-        elif self.current_token[1] == LEFT_PAREN:
+        elif self.current_token.token_type == LEFT_PAREN:
             self.match(LEFT_PAREN)
             self.validate_arth_expr()
             self.match(RIGHT_PAREN)
         else:
-            raise SyntaxError(f"⚠️  Syntax Error in <{self.current_token[0]}>! Not a valid expression!")
+            raise SyntaxError(f"⚠️  Syntax Error in <{self.current_token.lexeme}>! Not a valid expression!")
 

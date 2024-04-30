@@ -1,5 +1,6 @@
-from lexer import Lexer
+from lexer import Lexer, Token
 from simple_parser import Parser
+from symbol_table import SymbolTable
 from tabulate import tabulate
 
 def print_title(title: str, end: str = "\n", before: str=None):
@@ -35,7 +36,7 @@ def get_input_code(from_file: bool=True) -> str:
     return input_code
 
 
-def lexical_analysis(code: str) -> list[tuple[str, str]]:
+def lexical_analysis(code: str) -> list[Token]:
     """Do Lexical analysis to the input code and get tokens, and
     lexemes in it.
 
@@ -43,14 +44,14 @@ def lexical_analysis(code: str) -> list[tuple[str, str]]:
         code (str): The input code we will analyze.
 
     Returns:
-        list[tuple[str, str]]: The list of tokens and lexemes in the code.
+        list[Token]: The list of tokens and lexemes in the code.
     """
     lexer = Lexer(code = code)
     tokens = lexer.get_tokens()
     return tokens
 
 
-def parsing(tokens: list[tuple[str, str]]):
+def parsing(tokens: list[Token]):
     parser = Parser(tokens=tokens)
     parsing_tree = parser.parse()
     return parsing_tree
@@ -74,17 +75,30 @@ def main():
         # Print tokens in a table form.
         print_title(title="Lexical Analysis", before="\n")
         print(f"Total number of lexemes and tokens: {len(tokens)}\n")
-        print(tabulate(tokens, headers=["Lexeme", "Token"], tablefmt="grid", stralign="center"))
+        tokens_to_print = [(token.lexeme, token.token_type) for token in tokens]
+        print(tabulate(tokens_to_print, headers=["Lexeme", "Token"], tablefmt="grid", stralign="center"))
         
         # Check code grammar using the parser and get the parsing tree.
         print_title(title="Parsing", before="\n")
         tree = parsing(tokens=tokens)
         print("This is a valid syntax!")
         
-        print_title(title="Symbol Table", before="\n")
+        symbol_table = SymbolTable(tokens)
+        unordered = symbol_table.get_unordered_symbol_table()
+        ordered = symbol_table.get_ordered_symbol_table()
+        
+        headers = ["Id", "Data Type", "Delaration Line", "Reference Lines", "Address", "Scope", "Dimension"]
+        
+        print_title(title="Unordered Symbol Table", before="\n")
+        print(tabulate(unordered.values(), headers=headers, tablefmt="grid", stralign="center", numalign="center"))
+        
+        print_title(title="Ordered Symbol Table", before="\n")
+        print(tabulate(ordered.values(), headers=headers, tablefmt="grid", stralign="center", numalign="center"))
         
     except SyntaxError as se:
         print(se)
+    except ValueError as ve:
+        print(ve)
 
 
 if __name__ == "__main__":
