@@ -129,3 +129,43 @@ def print_tree_table(root: TreeNode):
     pretty_printer = TreePrettyPrinter(nltk_tree)
     print(pretty_printer)
 
+
+class HashSymbolTable:
+    def __init__(self, ids: list[str]):
+        self.ids = ids
+        self.table = {}
+        self.insert_all()
+        
+
+    def hash_function(self, id):
+        return (len(id) + ord(id[0])) % len(self.ids)
+    
+    
+    def get_all_hash_indeces(self):
+        return [self.hash_function(id) for id in self.ids]
+    
+    
+    def insert_all(self):
+        hash_indeces = self.get_all_hash_indeces()
+        
+        for i, id in enumerate(self.ids):
+            index = hash_indeces[i]
+            if index not in self.table:
+                self.table[index] = []
+            self.table[index].append(id)
+    
+    
+    def print_hash_table(self):
+        for index in range(len(self.ids)):
+            if index not in self.table:
+                print(index)
+            else:
+                print(f"{index} -->", end=" ")
+                index_ids = self.table[index]
+                
+                for i in range(len(index_ids)):
+                    if i < len(index_ids) - 1:
+                        print(f"{index_ids[i]} -->", end=" ")
+                    else:
+                        print(f"{index_ids[i]}")
+

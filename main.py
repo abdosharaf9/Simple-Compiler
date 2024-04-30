@@ -1,6 +1,6 @@
 from lexer import Lexer, Token
 from simple_parser import Parser, Node
-from symbol_table import SymbolTable, get_tree_symbol_table, print_tree_table
+from symbol_table import SymbolTable, HashSymbolTable, get_tree_symbol_table, print_tree_table
 from tokens import ID
 from tabulate import tabulate
 
@@ -69,7 +69,7 @@ def get_ordered_symbol_table():
 
 def get_ids(tokens: list[Token]) -> list[str]:
     id_tokens = filter(lambda x: x.token_type == ID, tokens)
-    return list(map(lambda x: x.lexeme, id_tokens))
+    return list(set(map(lambda x: x.lexeme, id_tokens)))
 
 
 def main():
@@ -114,6 +114,10 @@ def main():
         tree = get_tree_symbol_table(ids)
         print_title(title="Tree Structured Symbol Table", before="\n")
         print_tree_table(tree)
+        
+        print_title(title="Hash Symbol Table", before="\n")
+        hash_table = HashSymbolTable(ids)
+        hash_table.print_hash_table()
         
     except SyntaxError as se:
         print(se)
