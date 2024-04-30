@@ -1,6 +1,7 @@
 from lexer import Lexer, Token
 from simple_parser import Parser
-from symbol_table import SymbolTable
+from symbol_table import SymbolTable, get_tree_symbol_table, print_tree_table
+from tokens import ID
 from tabulate import tabulate
 
 def print_title(title: str, end: str = "\n", before: str=None):
@@ -65,6 +66,11 @@ def get_ordered_symbol_table():
     pass
 
 
+def get_ids(tokens: list[Token]) -> list[str]:
+    id_tokens = filter(lambda x: x.token_type == ID, tokens)
+    return list(map(lambda x: x.lexeme, id_tokens))
+
+
 def main():
     input_code = get_input_code()
     
@@ -83,17 +89,26 @@ def main():
         tree = parsing(tokens=tokens)
         print("This is a valid syntax!")
         
+        # Get unordered and ordered symbol table.
         symbol_table = SymbolTable(tokens)
         unordered = symbol_table.get_unordered_symbol_table()
         ordered = symbol_table.get_ordered_symbol_table()
         
         headers = ["Id", "Data Type", "Delaration Line", "Reference Lines", "Address", "Scope", "Dimension"]
         
+        # print unordered symbol table in table form.
         print_title(title="Unordered Symbol Table", before="\n")
         print(tabulate(unordered.values(), headers=headers, tablefmt="grid", stralign="center", numalign="center"))
         
+        # print ordered symbol table in table form.
         print_title(title="Ordered Symbol Table", before="\n")
         print(tabulate(ordered.values(), headers=headers, tablefmt="grid", stralign="center", numalign="center"))
+        
+        # print ids only from tokens, form tree symbol table, and print it.
+        ids = get_ids(tokens)
+        tree = get_tree_symbol_table(ids)
+        print_title(title="Tree Structured Symbol Table", before="\n")
+        print_tree_table(tree)
         
     except SyntaxError as se:
         print(se)

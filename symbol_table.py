@@ -1,6 +1,7 @@
 from lexer import Token
 from tokens import *
 from dataclasses import dataclass
+from nltk.tree import Tree, TreePrettyPrinter
 
 @dataclass
 class SymbolTableEntry:
@@ -61,7 +62,7 @@ class SymbolTable:
                 elif token.lexeme in self.unordered_table:
                     self.insert(name=token.lexeme, data_type=None, line=token.line_number, scope=current_scope)
                 else:
-                    raise ValueError(f"⚠️  Data type missing for identifier <{token.lexeme}>!")
+                    raise ValueError(f"⚠️  Data type missing for token <{token.lexeme}>!")
             elif token.token_type == LEFT_BRACE:
                 opened_braces += 1
             elif token.token_type == RIGHT_BRACE:
@@ -87,4 +88,44 @@ class SymbolTable:
 
     def get_ordered_symbol_table(self):
         return self.ordered_table
+
+
+class TreeNode:
+    def __init__(self, value: str):
+        self.value: str = value
+        self.left: TreeNode = None
+        self.right: TreeNode = None
+
+
+def get_tree_symbol_table(tokens: list[str]):
+    root = TreeNode(tokens[0])
+    
+    for token in tokens[1:]:
+        insert_node(root, token)
+    
+    return root
+
+
+def insert_node(root: TreeNode, token: str):
+    if root is None:
+        return TreeNode(token)
+    
+    if token < root.value:
+        root.left = insert_node(root.left, token)
+    elif token > root.value:
+        root.right = insert_node(root.right, token)
+    
+    return root
+
+
+def convert_to_nltk_tree(node):
+    if node is None:
+        return
+    return Tree(str(node.value), [convert_to_nltk_tree(node.left), convert_to_nltk_tree(node.right)])
+
+
+def print_tree_table(root: TreeNode):
+    nltk_tree = convert_to_nltk_tree(root)
+    pretty_printer = TreePrettyPrinter(nltk_tree)
+    print(pretty_printer)
 
