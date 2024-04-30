@@ -11,7 +11,7 @@ class SymbolTableEntry:
     usage_lines: list[int]
     address: str
     scope: str = "Global"
-    dimension: int = 1
+    dimension: int = 0
 
     def add_usage_line(self, line):
         self.usage_lines.append(line)
@@ -34,7 +34,7 @@ class SymbolTable:
             entry = self.add_usage(name, line)
         else:
             # The Id is new and add create new object for it.
-            entry = SymbolTableEntry(name, data_type, line, [line], f"0x00{self.address}", scope)
+            entry = SymbolTableEntry(name, data_type, line, [], f"0x00{self.address}", scope)
             self.address += 1
         
         # Update the Id object in the table.
