@@ -1,0 +1,115 @@
+stmt_list
+	dec_stmt
+		Data Type
+		ID
+		Assign Operator
+		arth_expr
+			term
+				Number
+		Semicolon
+	assign_stmt
+		ID
+		Assign Operator
+		arth_expr
+			term
+				Number
+		Semicolon
+	dec_stmt
+		Data Type
+		ID
+		Assign Operator
+		arth_expr
+			term
+				Number
+		Semicolon
+	dec_stmt
+		Data Type
+		ID
+		Assign Operator
+		arth_expr
+			term
+				Left Parenthesis
+				arth_expr
+					term
+						ID
+					Arithmetic Operator
+					term
+						ID
+				Right Parenthesis
+			Arithmetic Operator
+			term
+				Number
+		Semicolon
+	if_stmt
+		Keyword
+		Left Parenthesis
+		rel_expr
+			arth_expr
+				term
+					ID
+				Arithmetic Operator
+				term
+					Number
+			Relational Operator
+			arth_expr
+				term
+					Number
+				Arithmetic Operator
+				term
+					Number
+		Right Parenthesis
+		Left Brace
+		if_stmt
+			Keyword
+			Left Parenthesis
+			rel_expr
+				arth_expr
+					term
+						Left Parenthesis
+						arth_expr
+							term
+								ID
+							Arithmetic Operator
+							term
+								Number
+						Right Parenthesis
+				Relational Operator
+				arth_expr
+					term
+						Number
+			Right Parenthesis
+			Left Brace
+			print_stmt
+				Keyword
+				Left Parenthesis
+				ID
+				Right Parenthesis
+				Semicolon
+			Right Brace
+		Right Brace
+	if_stmt
+		Keyword
+		Left Parenthesis
+		rel_expr
+			arth_expr
+				term
+					ID
+			Relational Operator
+			arth_expr
+				term
+					Number
+		Right Parenthesis
+		Left Brace
+		dec_stmt
+			Data Type
+			ID
+			Assign Operator
+			arth_expr
+				term
+					Number
+			Semicolon
+		Right Brace
+	dec_stmt
+		Data Type
+		ID
+		Semicolon

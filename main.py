@@ -1,5 +1,5 @@
 from lexer import Lexer, Token
-from simple_parser import Parser
+from simple_parser import Parser, Node
 from symbol_table import SymbolTable, get_tree_symbol_table, print_tree_table
 from tokens import ID
 from tabulate import tabulate
@@ -52,9 +52,10 @@ def lexical_analysis(code: str) -> list[Token]:
     return tokens
 
 
-def parsing(tokens: list[Token]):
+def parsing(tokens: list[Token]) -> Node:
     parser = Parser(tokens=tokens)
-    parsing_tree = parser.parse()
+    parser.parse()
+    parsing_tree = parser.root
     return parsing_tree
 
 
@@ -89,7 +90,11 @@ def main():
         tree = parsing(tokens=tokens)
         print("This is a valid syntax!")
         
-        # Get unordered and ordered symbol table.
+        print("For the parsing tree, see the \"output_tree.txt\" file.")
+        with open("output_tree.txt", "w") as file_output:
+            tree.print_tree(file_output)
+        
+        # # Get unordered and ordered symbol table.
         symbol_table = SymbolTable(tokens)
         unordered = symbol_table.get_unordered_symbol_table()
         ordered = symbol_table.get_ordered_symbol_table()

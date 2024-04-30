@@ -1,11 +1,27 @@
 from lexer import Token
 from tokens import *
 
+class Node:
+    def __init__(self, type):
+        self.type = type
+        self.children = []
+
+    def add_child(self, node):
+        self.children.append(node)
+    
+    def print_tree(self, file, level=0):
+        # print("\t" * level + self.type)
+        file.write("\t" * level + self.type + "\n")
+        for child in self.children:
+            child.print_tree(file, level + 1)
+
+
 class Parser:
     def __init__(self, tokens: list[Token]):
         self.tokens: list[Token] = tokens
         self.token_index: int = -1
         self.current_token: Token = None
+        self.root: Node = None
         self.advance()
 
 
@@ -25,81 +41,154 @@ class Parser:
 
 
     def parse(self):
-        self.stmt_list()
+        self.root = self.stmt_list()
 
 
-    def stmt_list(self):
+    def stmt_list(self) -> Node:
+        root = Node("stmt_list")
+        
         while self.current_token != None:
-            self.stmt()
+            root.add_child(self.stmt())
+        
+        return root
 
 
-    def stmt(self):
+    def stmt(self) -> Node:
         if self.current_token.token_type == DATA_TYPE:
-            self.validate_dec_stmt()
+            return self.validate_dec_stmt()
         elif self.current_token.token_type == ID:
-            self.validate_assign_stmt()
+            return self.validate_assign_stmt()
         elif self.current_token.lexeme == "print" and self.current_token.token_type == KEYWORD:
-            self.validate_print_stmt()
+            return self.validate_print_stmt()
         elif self.current_token.lexeme == "if" and self.current_token.token_type == KEYWORD:
-            self.validate_if_stmt()
+            return self.validate_if_stmt()
         else:
             raise SyntaxError(f"⚠️  Syntax Error in <{self.current_token.lexeme}>! Unexpected token <{self.current_token.token_type}>")
 
 
-    def validate_dec_stmt(self):
+    def validate_dec_stmt(self) -> Node:
+        node = Node("dec_stmt")
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(DATA_TYPE)
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(ID)
+        
         if self.current_token.token_type == ASSIGN:
+            node.add_child(Node(self.current_token.token_type))
             self.match(ASSIGN)
-            self.validate_arth_expr()
+            
+            node.add_child(self.validate_arth_expr())
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(SEMICOLON)
+        
+        return node
 
 
-    def validate_assign_stmt(self):
+    def validate_assign_stmt(self) -> Node:
+        node = Node("assign_stmt")
+        node.add_child(Node(self.current_token.token_type))
         self.match(ID)
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(ASSIGN)
-        self.validate_arth_expr()
+        
+        node.add_child(self.validate_arth_expr())
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(SEMICOLON)
+        
+        return node
 
 
-    def validate_print_stmt(self):
+    def validate_print_stmt(self) -> Node:
+        node = Node("print_stmt")
+        node.add_child(Node(self.current_token.token_type))
         self.match(KEYWORD)
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(LEFT_PAREN)
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(ID)
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(RIGHT_PAREN)
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(SEMICOLON)
+        
+        return node
 
 
-    def validate_if_stmt(self):
+    def validate_if_stmt(self) -> Node:
+        node = Node("if_stmt")
+        node.add_child(Node(self.current_token.token_type))
         self.match(KEYWORD)
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(LEFT_PAREN)
-        self.validate_rel_expr()
+        
+        node.add_child(self.validate_rel_expr())
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(RIGHT_PAREN)
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(LEFT_BRACE)
-        self.stmt()
+        
+        node.add_child(self.stmt())
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(RIGHT_BRACE)
+        
+        return node
 
 
-    def validate_rel_expr(self):
-        self.validate_arth_expr()
+    def validate_rel_expr(self) -> Node:
+        node = Node("rel_expr")
+        
+        node.add_child(self.validate_arth_expr())
+        
+        node.add_child(Node(self.current_token.token_type))
         self.match(RELATIONAL_OPERATOR)
-        self.validate_arth_expr()
+        
+        node.add_child(self.validate_arth_expr())
+        
+        return node
 
 
-    def validate_arth_expr(self):
-        self.validate_term()
+    def validate_arth_expr(self) -> Node:
+        node = Node("arth_expr")
+        
+        node.add_child(self.validate_term())
+        
         while self.current_token.token_type == ARITHMETIC_OPERATOR:
+            node.add_child(Node(self.current_token.token_type))
             self.advance()
-            self.validate_term()
+            
+            node.add_child(self.validate_term())
+
+        return node
 
 
-    def validate_term(self):
+    def validate_term(self) -> Node:
+        node = Node("term")
+        
         if self.current_token.token_type in [ID, NUMBER]:
+            node.add_child(Node(self.current_token.token_type))
             self.advance()
         elif self.current_token.token_type == LEFT_PAREN:
+            node.add_child(Node(self.current_token.token_type))
             self.match(LEFT_PAREN)
-            self.validate_arth_expr()
+            
+            node.add_child(self.validate_arth_expr())
+            
+            node.add_child(Node(self.current_token.token_type))
             self.match(RIGHT_PAREN)
         else:
             raise SyntaxError(f"⚠️  Syntax Error in <{self.current_token.lexeme}>! Not a valid expression!")
-
+        
+        return node
