@@ -9,7 +9,7 @@ class SymbolTableEntry:
     data_type: str
     line_declaration: int
     usage_lines: list[int]
-    address: str
+    address: int
     scope: str = "Global"
     dimension: int = 0
 
@@ -22,7 +22,7 @@ class SymbolTable:
         self.tokens: list[Token] = tokens
         self.unordered_table: dict[str, SymbolTableEntry] = {}
         self.ordered_table: dict[str, SymbolTableEntry] = {}
-        self.address: int = 100
+        self.address: int = 0
         self.build_unordered_symbol_table()
         self.build_ordered_symbol_table()
 
@@ -34,8 +34,8 @@ class SymbolTable:
             entry = self.add_usage(name, line)
         else:
             # The Id is new and add create new object for it.
-            entry = SymbolTableEntry(name, data_type, line, [], f"0x00{self.address}", scope)
-            self.address += 1
+            entry = SymbolTableEntry(name, data_type, line, [], self.address, scope)
+            self.address += 2
         
         # Update the Id object in the table.
         self.unordered_table[name] = entry
@@ -74,12 +74,6 @@ class SymbolTable:
 
     def build_ordered_symbol_table(self):
         self.ordered_table = dict(sorted(self.unordered_table.items(), key=lambda item: item[0]))
-        
-        # Reset the adresses to start from 0x00100
-        address_counter = 100
-        for _, entry in self.ordered_table.items():
-            entry.address = f"0x00{address_counter}"
-            address_counter += 1
 
 
     def get_unordered_symbol_table(self):

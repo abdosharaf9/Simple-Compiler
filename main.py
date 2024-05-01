@@ -59,14 +59,6 @@ def parsing(tokens: list[Token]) -> Node:
     return parsing_tree
 
 
-def get_unordered_symbol_table():
-    pass
-
-
-def get_ordered_symbol_table():
-    pass
-
-
 def get_ids(tokens: list[Token]) -> list[str]:
     id_tokens = filter(lambda x: x.token_type == ID, tokens)
     return list(set(map(lambda x: x.lexeme, id_tokens)))
