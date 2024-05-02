@@ -1,115 +1,100 @@
 stmt_list
 	dec_stmt
-		Data Type
-		ID
-		Assign Operator
-		arth_expr
-			term
-				Number
-		Semicolon
-	assign_stmt
-		ID
-		Assign Operator
-		arth_expr
-			term
-				Number
-		Semicolon
+		Data Type(int)
+		ID(x)
+		Semicolon(;)
+	print_stmt
+		Keyword(print)
+		Left Parenthesis(()
+		ID(x)
+		Right Parenthesis())
+		Semicolon(;)
 	dec_stmt
-		Data Type
-		ID
-		Assign Operator
+		Data Type(float)
+		ID(f)
+		Assign Operator(=)
 		arth_expr
 			term
-				Number
-		Semicolon
+				Number(5.23)
+		Semicolon(;)
 	dec_stmt
-		Data Type
-		ID
-		Assign Operator
+		Data Type(int)
+		ID(a)
+		Assign Operator(=)
 		arth_expr
 			term
-				Left Parenthesis
+				Left Parenthesis(()
 				arth_expr
 					term
-						ID
-					Arithmetic Operator
+						ID(x)
+					Arithmetic Operator(+)
 					term
-						ID
-				Right Parenthesis
-			Arithmetic Operator
+						ID(f)
+				Right Parenthesis())
+			Arithmetic Operator(%)
 			term
-				Number
-		Semicolon
+				Number(10)
+		Semicolon(;)
 	if_stmt
-		Keyword
-		Left Parenthesis
+		Keyword(if)
+		Left Parenthesis(()
 		rel_expr
 			arth_expr
 				term
-					ID
-				Arithmetic Operator
-				term
-					Number
-			Relational Operator
+					Left Parenthesis(()
+					arth_expr
+						term
+							ID(x)
+						Arithmetic Operator(*)
+						term
+							Number(2)
+					Right Parenthesis())
+			Relational Operator(>=)
 			arth_expr
 				term
-					Number
-				Arithmetic Operator
-				term
-					Number
-		Right Parenthesis
-		Left Brace
+					Number(56)
+		Right Parenthesis())
+		Left Brace({)
 		if_stmt
-			Keyword
-			Left Parenthesis
+			Keyword(if)
+			Left Parenthesis(()
 			rel_expr
 				arth_expr
 					term
-						Left Parenthesis
-						arth_expr
-							term
-								ID
-							Arithmetic Operator
-							term
-								Number
-						Right Parenthesis
-				Relational Operator
+						ID(f)
+				Relational Operator(==)
 				arth_expr
 					term
-						Number
-			Right Parenthesis
-			Left Brace
+						Number(2)
+			Right Parenthesis())
+			Left Brace({)
 			print_stmt
-				Keyword
-				Left Parenthesis
-				ID
-				Right Parenthesis
-				Semicolon
-			Right Brace
-		Right Brace
+				Keyword(print)
+				Left Parenthesis(()
+				ID(a)
+				Right Parenthesis())
+				Semicolon(;)
+			Right Brace(})
+		Right Brace(})
 	if_stmt
-		Keyword
-		Left Parenthesis
+		Keyword(if)
+		Left Parenthesis(()
 		rel_expr
 			arth_expr
 				term
-					ID
-			Relational Operator
+					ID(x)
+			Relational Operator(!=)
 			arth_expr
 				term
-					Number
-		Right Parenthesis
-		Left Brace
+					Number(2)
+		Right Parenthesis())
+		Left Brace({)
 		dec_stmt
-			Data Type
-			ID
-			Assign Operator
+			Data Type(float)
+			ID(b)
+			Assign Operator(=)
 			arth_expr
 				term
-					Number
-			Semicolon
-		Right Brace
-	dec_stmt
-		Data Type
-		ID
-		Semicolon
+					Number(56.55)
+			Semicolon(;)
+		Right Brace(})

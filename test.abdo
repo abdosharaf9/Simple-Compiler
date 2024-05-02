@@ -1,0 +1,15 @@
+# This is a comment
+int x;
+print(x);
+float f = 5.23;
+int a = (x + f) % 10;
+
+if((x*2) >= 56) {
+    if(f == 2) {
+        print(a);
+    }
+}
+
+if(x != 2){
+    float b = 56.55;
+}

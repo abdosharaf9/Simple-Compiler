@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Token:
+    """Used to save single token."""
     lexeme: str
     token_type: str
     line_number: int
@@ -12,12 +13,13 @@ class Token:
 
 class Lexer:
     def __init__(self, code: str) -> None:
-        """Initialize the Lexer with the source code, and then loop over it.
+        """Initialize the Lexer with the source code, and
+        then loop over it.
 
         Args:
             code (str): Source code.
         """
-        # Split the source code to lines.
+        # Split the source code into lines.
         self.code: list[str] = code.split("\n")
         self.tokens: list[Token] = []
         self.check_tokens()
@@ -27,6 +29,11 @@ class Lexer:
         """Loop over the splitted source code and get the token type for
         each lexeme. Also, it handles the error when there is a lexeme
         doesn't match any type.
+
+        Raises:
+            SyntaxError: If there is a lexeme not matched with any token
+            regex, raise a syntax error to inform the user with the error
+            in details.
         """
         for line_number, line in enumerate(self.code, start=1):
             # Split single line to lexemes using a regex for more effeciency.
