@@ -1,7 +1,8 @@
 from lexer import Token
 from tokens import *
 from dataclasses import dataclass
-from nltk.tree import Tree, TreePrettyPrinter
+from PrettyPrint import PrettyPrintTree
+from colorama import Back
 
 @dataclass
 class SymbolTableEntry:
@@ -173,7 +174,7 @@ class TreeSymbolTable:
         """
         if root is None: return TreeTableNode(token)
         
-        if token > root.value:
+        if token < root.value:
             root.left_child = self.insert_node(root.left_child, token)
         else:
             root.right_child = self.insert_node(root.right_child, token)
@@ -181,32 +182,14 @@ class TreeSymbolTable:
         return root
 
 
-    def convert_to_nltk_tree(self, node: TreeTableNode) -> Tree:
-        """Used to convert the tree into NLTK Tree to easily print it.
-
-        Args:
-            node (TreeTableNode): The root node of the tree.
-
-        Returns:
-            Tree: The NLTK Tree that will be printed.
-        """
-        if node is None: return
-        
-        return Tree(
-            str(node.value),
-            [
-                self.convert_to_nltk_tree(node.left_child),
-                self.convert_to_nltk_tree(node.right_child)
-            ]
-        )
-
-
     def print_tree_table(self):
-        # TODO: Fix the printing way!!
-        """Print the tree table using NLTK TreePrettyPrinter."""
-        nltk_tree = self.convert_to_nltk_tree(self.root)
-        pretty_printer = TreePrettyPrinter(nltk_tree)
-        print(pretty_printer)
+        """Used to print the tree in a pretty way."""
+        pt = PrettyPrintTree(
+            get_children=lambda node: [] if node is None or node.left_child is node.right_child is None else [node.left_child, node.right_child],
+            get_val=lambda node: node.value if node else None,
+            color=Back.BLUE
+        )
+        pt(self.root)
 
 
 class HashSymbolTable:

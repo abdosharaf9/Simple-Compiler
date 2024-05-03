@@ -148,6 +148,7 @@ def print_symbol_tables(tokens: list[Token]):
     # Form tree symbol table and print it.
     tree_table = TreeSymbolTable(ids=ids)
     print_title(title="Tree Structured Symbol Table", before="\n")
+    print()
     tree_table.print_tree_table()
     
     # Form hash symbol table and print it.
